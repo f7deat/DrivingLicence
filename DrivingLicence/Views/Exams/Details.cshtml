@@ -1,0 +1,67 @@
+﻿@model IEnumerable<DrivingLicence.Data.Quiz>
+
+@{
+    ViewData["Title"] = "Đề thi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="card">
+        <div class="card-body">
+            <p>
+                <a asp-action="Create" asp-route-examId="@ViewBag.ExamId" asp-controller="Quizs" class="btn btn-success">Tạo câu hỏi</a>
+            </p>
+            <table class="table" id="datatable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Question)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Question)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.QuizId" asp-controller="quizs" class="btn btn-info btn-sm"><i class="fa fa-pen-square"></i></a>
+                                <a asp-action="Details" asp-controller="quizs" asp-route-id="@item.QuizId" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i></a>
+                                <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modal-centered-@item.QuizId"><i class="fa fa-trash"></i></button>
+                                <!-- Begin Centered Modal -->
+                                <div id="modal-centered-@item.QuizId" class="modal fade">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form asp-action="delete" asp-controller="quizs" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Xóa</h4>
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        <span aria-hidden="true">×</span>
+                                                        <span class="sr-only">close</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="id" value="@item.QuizId" />
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-shadow" data-dismiss="modal">Hủy</button>
+                                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Centered Modal -->
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </div>
+    </div>

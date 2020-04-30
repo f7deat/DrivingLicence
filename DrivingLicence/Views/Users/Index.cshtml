@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+@{
+    ViewData["Title"] = "Danh sách tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-bordered table-hover table-striped" id="datatable">
+            <thead>
+                <tr>
+                    <th>
+                        Email
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            <a asp-action="index" asp-controller="consequences" asp-route-id="@item.Email" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i></a>
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modal-centered-@item.Id"><i class="fa fa-trash"></i></button>
+                            <!-- Begin Centered Modal -->
+                            <div id="modal-centered-@item.Id" class="modal fade">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form asp-action="delete" asp-controller="users" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Xóa</h4>
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                    <span aria-hidden="true">×</span>
+                                                    <span class="sr-only">close</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-shadow" data-dismiss="modal">Hủy</button>
+                                                <button type="submit" class="btn btn-danger">Xóa</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Centered Modal -->
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

@@ -1,0 +1,90 @@
+﻿@model IEnumerable<DrivingLicence.Data.Consequence>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-bordered table-hover table-striped" id="datatable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SubmitedDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Score)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CorrectCount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.WrongCount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ExamId)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubmitedDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Score)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CorrectCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.WrongCount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Exam.Name)
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.ConsequenceId" class="btn btn-primary btn-sm"><i class="fa fa-folder"></i></a>
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modal-centered-@item.ConsequenceId"><i class="fa fa-trash"></i></button>
+                            <!-- Begin Centered Modal -->
+                            <div id="modal-centered-@item.ConsequenceId" class="modal fade">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form asp-action="delete" asp-controller="consequences" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Xóa</h4>
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                    <span aria-hidden="true">×</span>
+                                                    <span class="sr-only">close</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="id" value="@item.ConsequenceId" />
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-shadow" data-dismiss="modal">Hủy</button>
+                                                <button type="submit" class="btn btn-danger">Xóa</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Centered Modal -->
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

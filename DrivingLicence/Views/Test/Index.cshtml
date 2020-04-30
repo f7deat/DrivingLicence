@@ -1,0 +1,178 @@
+﻿@model DrivingLicence.Models.Test
+@{
+    ViewData["Title"] = "Làm bài thi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="end" asp-controller="test" method="post" id="myForm">
+            <input type="hidden" asp-for="ExamId" value="@Model.Exam.ExamId" />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="p-2 border">
+                        <div class="font-weight-bold">Câu hỏi</div>
+                        <div class="p-2">
+                            @for (int i = 0; i < Model.Quizzes.Count(); i++)
+                            {
+                                <button type="button" class="btn btn-success mr-2" ng-click="selectQuestion(@i)">@(i + 1)</button>
+                            }
+                        </div>
+                    </div>
+                    <div class="p-2 border border-primary font-weight-bold">
+                        Thời gian còn: {{CountDown.minutes}}:{{CountDown.seconds}}
+                    </div>
+                    <div class="p-2 text-center">
+                        <button type="submit" class="btn btn-danger">Nộp bài</button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="p-2 border" style="min-height: 400px">
+                        @for (int i = 0; i < Model.Quizzes.Count(); i++)
+                        {
+                            <input type="hidden" asp-for="Answers[i].QuizId" value="@Model.Quizzes.ToArray()[i].QuizId" />
+                            <input type="hidden" asp-for="Answers[i].Choices" value="{{yourChoice[@i]}}" />
+                            <input type="hidden" asp-for="Answers[i].IsCorrect" value="{{isCorrect[@i]}}" />
+                            <div class="p-2 d-none" ng-class="{'d-block' : selectedQuiz == @i}">
+                                <div class="font-weight-bold text-info">Câu hỏi @(i + 1):</div>
+                                <div class="font-weight-bold">
+                                    @(Model.Quizzes.ToArray()[i].Question)
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Quizzes.ToArray()[i].Media))
+                                {
+                                    <div class="p-2">
+                                        <img src="~/media/@Model.Quizzes.ToArray()[i].Media" class="img-thumbnail" />
+                                    </div>
+                                }
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="@Model.Quizzes.ToArray()[i].QuizId-A" ng-click="increaseScore('@Model.Quizzes.ToArray()[i].QuizId', 'A', '@Model.Quizzes.ToArray()[i].Answers', '@i')">
+                                    <label class="custom-control-label" for="@Model.Quizzes.ToArray()[i].QuizId-A">@Model.Quizzes.ToArray()[i].ChoiceA</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="@Model.Quizzes.ToArray()[i].QuizId-B" ng-click="increaseScore('@Model.Quizzes.ToArray()[i].QuizId', 'B', '@Model.Quizzes.ToArray()[i].Answers', '@i')">
+                                    <label class="custom-control-label" for="@Model.Quizzes.ToArray()[i].QuizId-B">@Model.Quizzes.ToArray()[i].ChoiceB</label>
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.Quizzes.ToArray()[i].ChoiceC))
+                                {
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="@Model.Quizzes.ToArray()[i].QuizId-C" ng-click="increaseScore('@Model.Quizzes.ToArray()[i].QuizId', 'C', '@Model.Quizzes.ToArray()[i].Answers', '@i')">
+                                        <label class="custom-control-label" for="@Model.Quizzes.ToArray()[i].QuizId-C">@Model.Quizzes.ToArray()[i].ChoiceC</label>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Quizzes.ToArray()[i].ChoiceD))
+                                {
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="@Model.Quizzes.ToArray()[i].QuizId-D" ng-click="increaseScore('@Model.Quizzes.ToArray()[i].QuizId', 'D', '@Model.Quizzes.ToArray()[i].Answers', '@i')">
+                                        <label class="custom-control-label" for="@Model.Quizzes.ToArray()[i].QuizId-D">@Model.Quizzes.ToArray()[i].ChoiceD</label>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        <div class="clearfix p-2 mt-2">
+                            <button class="btn btn-primary float-right" type="button" ng-class="{'disabled' : pageIndex == @(Model.Quizzes.Count() - 1)}" ng-click="nextPage(true)">Trang sau</button>
+                            <button class="btn btn-primary" type="button" ng-class="{'disabled' : pageIndex == 0}" ng-click="nextPage(false)">Trang trước</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function ($scope, $interval) {
+            // Lấy thời gian của đề
+            $scope.time = @(Model.Exam.Time * 60 * 1000);
+            // Khởi tạo câu hỏi được chọn
+            $scope.selectedQuiz = 0;
+            $scope.pageIndex = 0;
+            $scope.yourChoice = [];
+            $scope.isCorrect = [];
+            // event chọn câu hỏi
+            $scope.selectQuestion = function (quizNumber) {
+                $scope.selectedQuiz = quizNumber;
+                $scope.pageIndex = quizNumber;
+            }
+            // Tính điểm
+            $scope.choiceCollection = [];
+            $scope.correctAnswer = 0;
+            $scope.increaseScore = function (quizId, yourChoice, answer, index) {
+                // khởi tạo lựa chọn là trống nếu chưa được định nghĩa
+                if (!$scope.yourChoice[index]) {
+                    $scope.yourChoice[index] = '';
+                }
+                if ($scope.yourChoice[index].includes(yourChoice)) {
+                    // Xóa lựa chọn nếu checkbox uncheck
+                    $scope.yourChoice[index] = $scope.yourChoice[index].replace(yourChoice, '');
+                } else {
+                    // thêm câu trả lời
+                    $scope.yourChoice[index] += yourChoice;
+                }
+            }
+
+            // Sang trang
+            $scope.nextPage = function (state) {
+                if ($scope.pageIndex >= 0 && $scope.pageIndex <= @(Model.Quizzes.Count() - 1)) {
+                    if (state) {
+                        $scope.selectedQuiz += 1;
+                        $scope.pageIndex += 1;
+                    } else {
+                        if ($scope.pageIndex != 0 || $scope.selectedQuiz != 0) {
+                            $scope.selectedQuiz -= 1;
+                            $scope.pageIndex -= 1;
+                        }
+                    }
+                }
+            }
+            // thời gian
+            $scope.CountDown = {
+                days: 0,
+                hours: 0,
+                minutes: 0,
+                seconds: 0,
+                getTimeRemaining: function (endtime) {
+                    var t = Date.parse(endtime) - Date.parse(new Date());
+                    var seconds = Math.floor((t / 1000) % 60);
+                    var minutes = Math.floor((t / 1000 / 60) % 60);
+                    var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+                    var days = Math.floor(t / (1000 * 60 * 60 * 24));
+                    return {
+                        'total': t,
+                        'days': days,
+                        'hours': hours,
+                        'minutes': minutes,
+                        'seconds': seconds
+                    };
+                },
+
+                initializeClock: function (endtime) {
+                    function updateClock() {
+                        var t = $scope.CountDown.getTimeRemaining(endtime);
+
+                        $scope.CountDown.days = t.days < 10 ? '0' + t.days : t.days;
+                        $scope.CountDown.hours = ('0' + t.hours).slice(-2);
+                        $scope.CountDown.minutes = ('0' + t.minutes).slice(-2);
+                        $scope.CountDown.seconds = ('0' + t.seconds).slice(-2);
+
+                        if (t.total <= 0) {
+                            $interval.cancel(timeinterval);
+                        }
+                        if ($scope.CountDown.minutes === 0) {
+                            // tự động nộp bài nếu hết giờ
+                            document.getElementById("myForm").submit();
+                        }
+                    }
+
+                    updateClock();
+                    var timeinterval = $interval(updateClock, 1000);
+                }
+            }
+
+            var deadline = new Date(Date.parse(new Date()) + $scope.time);
+            $scope.CountDown.initializeClock(deadline);
+        });
+    </script>
+}

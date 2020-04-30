@@ -1,0 +1,105 @@
+﻿@model DrivingLicence.Data.Quiz
+
+@{
+    ViewData["Title"] = "Câu hỏi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="QuizId" />
+            <input type="hidden" asp-for="ExamId" />
+            <div class="form-group">
+                <label asp-for="Question" class="control-label"></label>
+                <input asp-for="Question" class="form-control" />
+                <span asp-validation-for="Question" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ChoiceA" class="control-label"></label>
+                <input asp-for="ChoiceA" class="form-control" />
+                <span asp-validation-for="ChoiceA" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ChoiceB" class="control-label"></label>
+                <input asp-for="ChoiceB" class="form-control" />
+                <span asp-validation-for="ChoiceB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ChoiceC" class="control-label"></label>
+                <input asp-for="ChoiceC" class="form-control" />
+                <span asp-validation-for="ChoiceC" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ChoiceD" class="control-label"></label>
+                <input asp-for="ChoiceD" class="form-control" />
+                <span asp-validation-for="ChoiceD" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Media" class="control-label"></label>
+                @if (!string.IsNullOrEmpty(Model.Media))
+                {
+                    <img src="~/media/@Model.Media" class="img-thumbnail" />
+                }
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile" name="Media" lang="vi">
+                    <label class="custom-file-label" for="customFile">Chọn hình ảnh</label>
+                </div>
+                <span asp-validation-for="Media" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Answers" class="control-label"></label>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="aswerA" ng-click="setAnswer('A')" @(Model.Answers.Contains("A") ? "checked" : "")>
+                    <label class="custom-control-label" for="aswerA">A</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="aswerB" ng-click="setAnswer('B')" @(Model.Answers.Contains("B") ? "checked" : "")>
+                    <label class="custom-control-label" for="aswerB">B</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="aswerC" ng-click="setAnswer('C')" @(Model.Answers.Contains("C") ? "checked" : "")>
+                    <label class="custom-control-label" for="aswerC">C</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="aswerD" ng-click="setAnswer('D')" @(Model.Answers.Contains("D") ? "checked" : "")>
+                    <label class="custom-control-label" for="aswerD">D</label>
+                </div>
+                <input type="hidden" asp-for="Answers" value="{{answers}}" />
+                <span asp-validation-for="Answers" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+                <a asp-action="Details" asp-route-id="@Model.ExamId" asp-controller="exams" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function ($scope) {
+        $scope.answers = '@Model.Answers';
+        $scope.setAnswer = function (answer) {
+            if ($scope.answers) {
+                // nếu đã tồn tại 1 đáp án, tiến hành kiểm tra. nếu có thì xóa, nếu không thì thêm
+                if ($scope.answers.includes(answer)) {
+                    $scope.answers = $scope.answers.replace(answer, '');
+                }
+                else {
+                    $scope.answers = $scope.answers + answer
+                }
+            }
+            else {
+                // nếu chưa có đáp án nào được chọn
+                $scope.answers = $scope.answers + answer
+            }
+            // log ra xem thử đúng không :D
+            console.log($scope.answers)
+        }
+    });
+</script>
+}

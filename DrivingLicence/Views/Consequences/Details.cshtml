@@ -1,0 +1,20 @@
+﻿@model DrivingLicence.Data.Consequence
+
+@{
+    ViewData["Title"] = "Kết quả";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h3>Kết quả thi của bạn</h3>
+        <ul class="list-group">
+            <li class="list-group-item">Mã đề: @Model.ExamId</li>
+            <li class="list-group-item">Ngày thi: @Model.SubmitedDate</li>
+            <li class="list-group-item">Số câu đúng: @Model.CorrectCount</li>
+            <li class="list-group-item">Số câu sai: @Model.WrongCount</li>
+            <li class="list-group-item">Điểm: @Model.Score</li>
+            <li class="list-group-item">Kết quả: @(Model.Score > 80 ? "Đạt" : "Không đạt")</li>
+        </ul>
+    </div>
+</div>

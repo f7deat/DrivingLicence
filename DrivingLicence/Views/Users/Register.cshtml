@@ -1,0 +1,53 @@
+﻿@model DrivingLicence.Models.Register
+@{
+    Layout = null;
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Đăng ký</title>
+    <link href="~/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="page-wrapper flex-row align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="card p-4">
+                        <div class="card-header text-center text-uppercase h4 font-weight-light">
+                            Đăng ký
+                        </div>
+
+                        <form action="/users/register" method="post">
+                            <div class="card-body py-5">
+
+                                <div class="form-group">
+                                    <label class="form-control-label">Email</label>
+                                    <input type="email" class="form-control" asp-for="Email">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label">Mật khẩu</label>
+                                    <input type="password" class="form-control" asp-for="Password">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label">Nhập lại mật khẩu</label>
+                                    <input type="password" class="form-control" asp-for="ConfirmPassword">
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-success btn-block">Đăng ký</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

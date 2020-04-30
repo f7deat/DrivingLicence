@@ -1,0 +1,45 @@
+﻿@model DrivingLicence.Data.Quiz
+
+@{
+    ViewData["Title"] = Model.Question;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-2 font-weight-bold">
+                    @Model.Question
+                </div>
+                <div class="mb-2">
+                    @if (!string.IsNullOrEmpty(Model.Media))
+                    {
+                        <img src="~/media/@Model.Media" />
+                    }
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2">
+                    A. @Model.ChoiceA
+                </div>
+                <div class="mb-2">
+                    B. @Model.ChoiceB
+                </div>
+                <div class="mb-2">
+                    C. @Model.ChoiceC
+                </div>
+                <div class="mb-2">
+                    D. @Model.ChoiceD
+                </div>
+                <div class="mb-2">
+                    Đáp án đúng: <b>@Model.Answers</b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.QuizId" class="btn btn-info"><i class="fa fa-pen-square"></i></a>
+    <a asp-action="details" asp-controller="exams" asp-route-id="@Model.ExamId" class="btn btn-secondary"><i class="fa fa-arrow-circle-left"></i></a>
+</div>

@@ -27,7 +27,7 @@
             </a>
 
             <a class="navbar-brand" href="#">
-                <img src="~/img/logo.png" />
+
             </a>
 
             <a href="#" class="btn btn-link sidebar-toggle d-md-down-none">
@@ -35,19 +35,6 @@
             </a>
 
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item d-md-down-none">
-                    <a href="#">
-                        <i class="fa fa-bell"></i>
-                        <span class="badge badge-pill badge-danger">5</span>
-                    </a>
-                </li>
-
-                <li class="nav-item d-md-down-none">
-                    <a href="#">
-                        <i class="fa fa-envelope-open"></i>
-                        <span class="badge badge-pill badge-danger">5</span>
-                    </a>
-                </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -63,10 +50,10 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right">
-                        <div class="dropdown-header">Account</div>
+                        <div class="dropdown-header">Tài khoản</div>
 
-                        <a href="#" class="dropdown-item">
-                            <i class="fa fa-user"></i> Profile
+                        <a href="/consequences/details/@User.Identity.Name" class="dropdown-item">
+                            <i class="fa fa-user"></i> Hồ sơ
                         </a>
                         @if (SignInManager.IsSignedIn(User))
                         {
@@ -90,7 +77,7 @@
             <div class="sidebar">
                 <nav class="sidebar-nav">
                     <ul class="nav">
-                        <li class="nav-title">Navigation</li>
+                        <li class="nav-title">Danh mục</li>
 
                         <li class="nav-item">
                             <a href="/dashboard" class="nav-link">
@@ -128,6 +115,27 @@
     <script src="~/js/carbon.js"></script>
     <script src="~/lib/angular.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $("#datatable").DataTable({
+            "language": {
+                "sProcessing": "Đang xử lý...",
+                "sLengthMenu": "Xem _MENU_ mục",
+                "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+                "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+                "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+                "sInfoPostFix": "",
+                "sSearch": "Tìm:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "Đầu",
+                    "sPrevious": "Trước",
+                    "sNext": "Tiếp",
+                    "sLast": "Cuối"
+                }
+            }
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

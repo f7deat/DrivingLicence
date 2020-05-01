@@ -44,14 +44,19 @@ namespace DrivingLicence.Controllers
             // đăng nhập không thành công sẽ trở về trang chủ
             return RedirectToAction("index", "home", new { message = "Đăng nhập không thành công!" });
         }
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> Register(string message)
         {
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            if (!string.IsNullOrEmpty(message))
+            {
+                ViewBag.Message = message;
+            }
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> Register(Register register)
         {
+            string message = string.Empty;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -86,7 +91,13 @@ namespace DrivingLicence.Controllers
                     // chuyển đến trang đăng nhập
                     return RedirectToAction("index", "home", new { message = "Đăng ký thành công!" });
                 }
+                else
+                {
+                    message = string.Join(",", result.Errors.Select(x => x.Description));
+                    ViewBag.Message = "toastr[\"error\"]('" + message + "')";
+                }
             }
+            ViewBag.Message = "toastr[\"error\"]('Có lỗi xảy ra, xin vui lòng thử lại')";
             return View();
         }
 

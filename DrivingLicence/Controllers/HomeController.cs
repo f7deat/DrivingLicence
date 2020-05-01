@@ -16,10 +16,10 @@ namespace DrivingLicence.Controllers
 
         public IActionResult Index(string message)
         {
-            if (string.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(message))
             {
                 // thông báo cho người dùng biết khi đăng nhập thất bại
-                ViewBag.Message = "toastr[\"info\"](" + message + ")";
+                ViewBag.Message = "toastr[\"info\"]('" + message + "')";
             }
             return View();
         }

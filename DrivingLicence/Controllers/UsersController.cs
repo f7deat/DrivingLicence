@@ -94,7 +94,8 @@ namespace DrivingLicence.Controllers
                 else
                 {
                     message = string.Join(",", result.Errors.Select(x => x.Description));
-                    ViewBag.Message = "toastr[\"error\"]('" + message + "')";
+                    ViewBag.Message = "toastr[\"error\"]('" + message.Replace("'", "") + "')";
+                    return View();
                 }
             }
             ViewBag.Message = "toastr[\"error\"]('Có lỗi xảy ra, xin vui lòng thử lại')";

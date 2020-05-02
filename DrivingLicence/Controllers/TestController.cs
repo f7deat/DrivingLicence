@@ -59,7 +59,7 @@ namespace DrivingLicence.Controllers
             // số câu hỏi sai
             consequence.WrongCount = quizs.Count() - consequence.CorrectCount;
             // tính điểm: tổng điểm = 100
-            consequence.Score = (100 / quizs.Count()) * consequence.CorrectCount;
+            consequence.Score = (int)Math.Ceiling(100 / (double)quizs.Count() * consequence.CorrectCount);
 
             await _context.AddAsync(consequence);
 

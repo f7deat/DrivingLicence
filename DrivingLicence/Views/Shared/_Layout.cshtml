@@ -52,9 +52,6 @@
                     <div class="dropdown-menu dropdown-menu-right">
                         <div class="dropdown-header">Tài khoản</div>
 
-                        <a href="/consequences/details/@User.Identity.Name" class="dropdown-item">
-                            <i class="fa fa-user"></i> Hồ sơ
-                        </a>
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
